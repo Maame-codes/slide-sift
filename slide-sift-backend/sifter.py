@@ -48,7 +48,7 @@ def simplify_lecture(lecture_text, client):
     
     # Generate content using the stable Gemini 2.5 Flash model
     response = client.models.generate_content(
-        model="gemini-2.5-flash",
+        model="gemini-1.5-flash",
         contents=f"{instruction}\n\nLecture Content:\n{lecture_text}"
     )
     
