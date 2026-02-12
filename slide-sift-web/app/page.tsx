@@ -97,10 +97,13 @@ export default function Home() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/sift", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        "https://slide-sift-backend.onrender.com/sift",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
       const data = await response.json();
       if (data.summary) setSummary(data.summary);
     } catch (error) {
