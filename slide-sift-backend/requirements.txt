@@ -1,6 +1,7 @@
-google-genai
+google-generativeai>=0.8.3
 pypdf
-python-dotenv
 flask
 flask-cors
 gunicorn
+python-dotenv
+werkzeug>=3.0.0
