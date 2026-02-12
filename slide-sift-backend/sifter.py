@@ -1,5 +1,5 @@
 import os
-from google import genai
+import google.generativeai as genai
 from pypdf import PdfReader
 from dotenv import load_dotenv
 

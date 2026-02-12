@@ -1,7 +1,7 @@
 import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from google import genai
+import google.generativeai as genai
 from sifter import extract_text_from_pdf, simplify_lecture
 from dotenv import load_dotenv
 
