@@ -1,0 +1,27 @@
+# --- Master Ignore List ---
+
+# 1. System Files
+.DS_Store
+Thumbs.db
+
+# 2. Python Backend Junk
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+env/
+slide-sift-backend/.env  <-- Explicitly blocking backend keys
+
+# 3. Next.js Frontend Junk
+node_modules/
+.next/
+out/
+build/
+.vercel
+slide-sift-web/.env.local  <-- Explicitly blocking frontend keys
+slide-sift-web/.env
+
+# 4. GLOBAL KEY BLOCKER (Just in case)
+.env
+.env.*
+*.pem
