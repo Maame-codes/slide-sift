@@ -5,11 +5,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Configure API Key internally (so app.py doesn't have to)
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
-else:
-    print("Error: GEMINI_API_KEY not found.")
 
 def extract_text_from_pdf(pdf_path):
     try:
@@ -24,11 +23,13 @@ def extract_text_from_pdf(pdf_path):
 
 def simplify_lecture(lecture_text):
     try:
-        model = genai.GenerativeModel('gemini-pro')
+        # SWITCHING TO TURBO MODE (Gemini 1.5 Flash)
+        # This is the line that makes it 30s faster!
+        model = genai.GenerativeModel('gemini-1.5-flash')
 
         prompt = (
-            "You are an academic assistant. Summarize these lecture notes "
-            "into a clean study guide with bullet points:\n\n"
+            "Summarize these lecture notes into a structured study guide "
+            "with clear bullet points. Keep it concise:\n\n"
             f"{lecture_text}"
         )
         

@@ -1,52 +1,59 @@
 import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import google.generativeai as genai
-from sifter import extract_text_from_pdf, simplify_lecture
 from dotenv import load_dotenv
+# Import the logic functions from our sifter module
+from sifter import extract_text_from_pdf, simplify_lecture
 
 # Initialize Flask and load environment variables
 app = Flask(__name__)
-CORS(app) # Enable Cross-Origin Resource Sharing
+CORS(app)  # Enable Cross-Origin Resource Sharing for the frontend
 load_dotenv()
-
-# Setup GenAI Client
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-client = genai.Client(
-    api_key=GEMINI_API_KEY,
-    http_options={'api_version': 'v1'}
-)
 
 @app.route('/sift', methods=['POST'])
 def sift_slides():
     """
-    API endpoint that receives a PDF file and returns simplified notes.
+    API endpoint that receives a PDF file, extracts text, 
+    and returns AI-generated simplified notes.
     """
-    # Check if a file was sent in the request
-    if 'file' not in request.files:
-        return jsonify({"error": "No file uploaded"}), 400
-    
-    file = request.files['file']
-    
-    # Save file temporarily to process it
     temp_path = "temp_lecture.pdf"
-    file.save(temp_path)
-    
+
     try:
-        # Step 1: Extract Text
+        # 1. Validate that a file was uploaded
+        if 'file' not in request.files:
+            return jsonify({"error": "No file part in the request"}), 400
+        
+        file = request.files['file']
+        
+        if file.filename == '':
+            return jsonify({"error": "No file selected"}), 400
+
+        # 2. Save the file temporarily
+        file.save(temp_path)
+        
+        # 3. Process the file
+        # Step A: Extract text from the PDF
         text = extract_text_from_pdf(temp_path)
         
-        # Step 2: Simplify with Gemini
+        if not text:
+            return jsonify({"error": "Could not extract text from PDF"}), 400
+
+        # Step B: Send text to Gemini for summarization
+        # Note: We only pass the text now; authentication is handled in sifter.py
         summary = simplify_lecture(text)
-        
-        # Clean up temporary file
-        os.remove(temp_path)
         
         return jsonify({"summary": summary})
     
     except Exception as e:
+        # Log the error for debugging and return a server error
+        print(f"Server Error: {e}")
         return jsonify({"error": str(e)}), 500
+        
+    finally:
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
 
 if __name__ == '__main__':
-    # Run the server on port 5000
+    # Run the server
+    # Note: debug=True is for development only
     app.run(debug=True, port=5000)
