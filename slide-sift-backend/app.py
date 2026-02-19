@@ -37,7 +37,7 @@ def sift_slides():
         text = extract_text_from_pdf(temp_path)
         
         # Step 2: Simplify with Gemini
-        summary = simplify_lecture(text, client)
+        summary = simplify_lecture(text)
         
         # Clean up temporary file
         os.remove(temp_path)
