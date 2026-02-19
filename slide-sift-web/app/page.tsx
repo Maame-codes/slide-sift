@@ -217,7 +217,7 @@ export default function Home() {
             guides.
           </p>
         </div>
-        <p>© 2026 Slide Sift Inc.</p>
+        <p>© 2026 Slide Sift by MAAME.</p>
       </footer>
     </div>
   );
