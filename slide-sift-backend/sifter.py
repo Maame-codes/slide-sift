@@ -1,14 +1,15 @@
 import os
-import google.generativeai as genai
+from groq import Groq
 from pypdf import PdfReader
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Configure API Key internally (so app.py doesn't have to)
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
+# Initialize the Groq Client
+# It automatically looks for "GROQ_API_KEY" in your environment
+client = Groq(
+    api_key=os.environ.get("GROQ_API_KEY"),
+)
 
 def extract_text_from_pdf(pdf_path):
     try:
@@ -23,18 +24,29 @@ def extract_text_from_pdf(pdf_path):
 
 def simplify_lecture(lecture_text):
     try:
-        # SWITCHING TO TURBO MODE (Gemini 1.5 Flash)
-        # This is the line that makes it 30s faster!
-        model = genai.GenerativeModel('gemini-1.5-flash-001')
-
-        prompt = (
-            "Summarize these lecture notes into a structured study guide "
-            "with clear bullet points. Keep it concise:\n\n"
-            f"{lecture_text}"
-        )
+        # We use Llama-3.3-70b-versatile (Smart & Fast)
+        # or llama3-8b-8192 (Insanely Fast)
         
-        response = model.generate_content(prompt)
-        return response.text
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a helpful academic assistant."
+                },
+                {
+                    "role": "user",
+                    "content": (
+                        "Summarize these lecture notes into a structured study guide "
+                        "with clear bullet points. Keep it concise:\n\n"
+                        f"{lecture_text}"
+                    ),
+                }
+            ],
+            model="llama-3.3-70b-versatile",
+            temperature=0.5,
+        )
+
+        return chat_completion.choices[0].message.content
         
     except Exception as e:
         return f"AI Error: {str(e)}"
