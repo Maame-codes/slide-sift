@@ -25,7 +25,7 @@ def simplify_lecture(lecture_text):
     try:
         # SWITCHING TO TURBO MODE (Gemini 1.5 Flash)
         # This is the line that makes it 30s faster!
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-1.5-flash-001')
 
         prompt = (
             "Summarize these lecture notes into a structured study guide "
