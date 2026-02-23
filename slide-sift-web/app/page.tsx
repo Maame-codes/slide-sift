@@ -141,7 +141,7 @@ export default function Home() {
           </h1>
           <p className="max-w-xl mx-auto text-slate-500 text-lg leading-relaxed">
             Upload your lecture PDFs. Our AI distills them into clean,
-            summarized study guides.
+            summarized study guides. (Only works on PDF's with max size 200 pages)
           </p>
         </header>
 
